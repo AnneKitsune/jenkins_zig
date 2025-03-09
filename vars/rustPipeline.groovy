@@ -6,34 +6,33 @@ def call(Map config = [:]) {
         rustVersion: 'stable',
         buildArgs: ''
     ]
-    config = defaults << config
+    config = defaults + config  // Proper config merging
 
     pipeline {
         agent none
         stages {
-            stage('Build & Test') {
-                parallel {
-                    config.osList.collect { os ->
-                        stage("${os.capitalize()}") {
-                            agent { label os }
-                            stages {
-                                stage('Compile') {
-                                    steps { rustCompile(config) }
-                                }
-                                stage('Test') {
-                                    steps { rustTest(config) }
-                                }
-                                stage('Benchmark') {
-                                    when { expression { config.enableBenchmarks } }
-                                    steps { rustBenchmark(config) }
-                                }
+            stage('Cross-Platform Build') {
+                steps {
+                    script {  // Switch to scripted pipeline for dynamic stages
+                        parallel(
+                            config.osList.collectEntries { os ->
+                                ["${os}": {
+                                    node(os) {
+                                        stage("${os} Compile") {
+                                            rustCompile(config)
+                                        }
+                                        stage("${os} Test") {
+                                            rustTest(config)
+                                        }
+                                        if (config.enableBenchmarks) {
+                                            stage("${os} Benchmark") {
+                                                rustBenchmark(config)
+                                            }
+                                        }
+                                    }
+                                }]
                             }
-                            post {
-                                always {
-                                    cleanWs()
-                                }
-                            }
-                        }
+                        )
                     }
                 }
             }
