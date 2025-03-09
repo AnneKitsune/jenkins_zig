@@ -1,0 +1,15 @@
+@Library('rust-pipeline-lib') _
+
+// Full pipeline with benchmarks
+rustPipeline(
+    osList: ['ubuntu-latest', 'windows-2022'],
+    rustVersion: 'nightly',
+    buildArgs: '--release'
+)
+
+// Pipeline without benchmarks
+rustPipeline(
+    enableBenchmarks: false,
+    osList: ['linux-arm64']
+)
+
