@@ -6,7 +6,7 @@ def call(Map config = [:]) {
         rustVersion: 'stable',
         buildArgs: ''
     ]
-    config = defaults + config  // Proper config merging
+    config = defaults << config  // Proper config merging
 
     pipeline {
         agent none

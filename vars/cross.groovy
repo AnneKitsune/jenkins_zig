@@ -1,10 +1,9 @@
-def isUnixAgent = isUnix()
 
 def command(String cmd) {
-  echo "running command ${cmd}"
-  if (isUnixAgent) {
-    sh(cmd)
+  echo "Running command: ${cmd}"
+  if (isUnix()) {
+    sh script: cmd, returnStatus: false
   } else {
-    bat(cmd)
+    bat script: cmd, returnStatus: false
   }
 }
