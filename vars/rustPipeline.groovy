@@ -1,7 +1,7 @@
 def call(Map config = [:]) {
     // Merge with default configuration
     def defaults = [
-        enableBenchmarks: true,
+        enableBenchmarks: false,
         osList: ['linux', 'win', 'osx', 'freebsd'],
         rustVersion: 'stable',
         buildArgs: ''
