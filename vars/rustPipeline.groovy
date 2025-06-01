@@ -4,6 +4,8 @@ def call(Map config = [:]) {
         enableBenchmarks: false,
         osList: ['linux', 'win', 'osx', 'freebsd'],
         rustVersion: 'stable',
+        repo: '',
+        branch: 'main',
         buildArgs: ''
     ]
     config = defaults << config  // Proper config merging
@@ -19,7 +21,7 @@ def call(Map config = [:]) {
                                 ["${os}": {
                                     node(os) {
                                         stage("${os} Clone") {
-                                            checkout scm
+                                            git(url: config.repo, branch: config.branch)
                                         }
                                         stage("${os} Compile") {
                                             rustCompile(config)
