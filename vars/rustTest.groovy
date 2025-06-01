@@ -1,5 +1,5 @@
 def call(Map config) {
-    command('cargo test --all --verbose')
+    cross.command('cargo test --all --verbose')
 }
 
 
