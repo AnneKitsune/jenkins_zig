@@ -2,8 +2,8 @@ def isUnixAgent = isUnix()
 
 def command(String cmd) {
   if (isUnixAgent) {
-    sh cmd
+    sh(cmd)
   } else {
-    bat cmd
+    bat(cmd)
   }
 }
