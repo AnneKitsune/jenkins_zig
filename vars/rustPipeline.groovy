@@ -18,6 +18,9 @@ def call(Map config = [:]) {
                             config.osList.collectEntries { os ->
                                 ["${os}": {
                                     node(os) {
+                                        stage("${os} Clone") {
+                                            checkout scm
+                                        }
                                         stage("${os} Compile") {
                                             rustCompile(config)
                                         }
