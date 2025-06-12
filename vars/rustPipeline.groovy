@@ -17,7 +17,7 @@ def call(Map config = [:]) {
         branches[os] = {
             node(os) {
                 stage("${os} Clone") {
-                    git(url: config.repo, branch: config.branch)
+                    checkout scm
                 }
                 stage("${os} Install Rust") {
                     if (isUnix()) {
