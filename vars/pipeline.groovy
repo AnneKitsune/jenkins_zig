@@ -3,11 +3,10 @@ def call(Map config = [:]) {
     def defaults = [
         enableBenchmarks: false,
         osList: ['linux', 'win', 'osx', 'freebsd'],
-        rustVersion: 'stable',
         repo: '',
         branch: 'main',
         buildArgs: '',
-        artifactPatterns: ['target/release/*']
+        artifactPatterns: ['zig-out/*/*']
     ]
     config = defaults << config  // Proper config merging
 
@@ -19,25 +18,22 @@ def call(Map config = [:]) {
                 stage("${os} Clone") {
                     checkout scm
                 }
-                stage("${os} Install Rust") {
+                stage("${os} Setup Env Vars") {
                     if (isUnix()) {
-                        sh "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain ${config.rustVersion}"
-                        env.PATH = "${env.HOME}/.cargo/bin:${env.PATH}"
+                        env.PATH = "${env.HOME}/.cargo/bin:${env.PATH}:/zig/bin"
                     } else {
-                        bat "curl -sSf -o rustup-init.exe https://win.rustup.rs"
-                        bat "rustup-init.exe -y --default-toolchain ${config.rustVersion}"
-                        env.PATH = "${env.USERPROFILE}\\.cargo\\bin;${env.PATH}"
+                        env.PATH = "${env.USERPROFILE}\\.cargo\\bin;${env.PATH};C:\\zig\\bin"
                     }
                 }
                 stage("${os} Compile") {
-                    rustCompile(config)
+                    compile(config)
                 }
                 stage("${os} Test") {
-                    rustTest(config)
+                    test(config)
                 }
                 if (config.enableBenchmarks) {
                     stage("${os} Benchmark") {
-                        rustBenchmark(config)
+                        benchmark(config)
                     }
                 }
                 stage("${os} Archive Artifacts") {
