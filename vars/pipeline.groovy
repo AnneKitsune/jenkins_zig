@@ -20,7 +20,7 @@ def call(Map config = [:]) {
                 }
                 stage("${os} Setup Env Vars") {
                     if (isUnix()) {
-                        env.PATH = "${env.HOME}/.cargo/bin:${env.PATH}:/zig/bin"
+                        env.PATH = "${env.HOME}/.cargo/bin:${env.PATH}:/zig/bin:/Users/user/zig/bin"
                     } else {
                         env.PATH = "${env.USERPROFILE}\\.cargo\\bin;${env.PATH};C:\\zig\\bin"
                     }
